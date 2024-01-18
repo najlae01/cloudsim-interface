@@ -798,7 +798,7 @@ class CloudConf(QtWidgets.QMainWindow):
         self.resize(1000, 600)
         self.center()
         self.setWindowIcon(QtGui.QIcon("./images/icon.png"))
-        self.setWindowTitle("IAAS CloudSim Configuration")
+        self.setWindowTitle("CloudSim")
         self.show()
         self.saveAction.triggered.connect(
             self.save
