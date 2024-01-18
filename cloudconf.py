@@ -687,17 +687,6 @@ class ConfigDialog(QtWidgets.QDialog):
 
         self.contentsWidget.currentItemChanged.connect(self.changePage)
 
-    def handleItemClick(self, item):
-        # Determine which button was clicked and switch to the corresponding page
-        if item.text() == "Data Center":
-            self.changePage(self.pagesWidget.widget(0), None)
-        elif item.text() == "Host":
-            self.changePage(self.pagesWidget.widget(1), None)
-        elif item.text() == "VM":
-            self.changePage(self.pagesWidget.widget(2), None)
-        elif item.text() == "Policy":
-            self.changePage(self.pagesWidget.widget(3), None)
-
 
 class CloudConf(QtWidgets.QMainWindow):
     def __init__(self):
@@ -753,28 +742,28 @@ class CloudConf(QtWidgets.QMainWindow):
         )
         self.showDatacenterAction.setStatusTip("Show Datacenter Configuration")
         self.showDatacenterAction.setShortcut("Ctrl+D")
-        self.saveAction.triggered.connect(self.configure_datacenter)
+        self.showDatacenterAction.triggered.connect(self.configure_datacenter)
 
         self.showHostAction = QtWidgets.QAction(
             QtGui.QIcon("./images/host.png"), "&Host", self
         )
         self.showHostAction.setStatusTip("Show Host Configuration")
         self.showHostAction.setShortcut("Ctrl+H")
-        self.saveAction.triggered.connect(self.configure_host)
+        self.showHostAction.triggered.connect(self.configure_host)
 
         self.showVMAction = QtWidgets.QAction(
             QtGui.QIcon("./images/vm.png"), "&VM", self
         )
         self.showVMAction.setStatusTip("Show Virtual Machine Configuration")
         self.showVMAction.setShortcut("Ctrl+M")
-        self.saveAction.triggered.connect(self.configure_vm)
+        self.showVMAction.triggered.connect(self.configure_vm)
 
         self.showPolicyAction = QtWidgets.QAction(
             QtGui.QIcon("./images/policy.png"), "&Policy", self
         )
         self.showPolicyAction.setStatusTip("Show Policy Configuration")
         self.showPolicyAction.setShortcut("Ctrl+P")
-        self.saveAction.triggered.connect(self.configure_policy)
+        self.showPolicyAction.triggered.connect(self.configure_policy)
 
         self.mainMenuBar = self.menuBar()
         self.fileMenu = self.mainMenuBar.addMenu("&File")
@@ -814,6 +803,7 @@ class CloudConf(QtWidgets.QMainWindow):
         self.saveAction.triggered.connect(
             self.save
         )  # Use self.saveAction.triggered.connect
+
 
 
 def main():
