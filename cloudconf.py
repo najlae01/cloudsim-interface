@@ -2,17 +2,14 @@
 
 import sys
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QIcon
 from PyQt5 import QtGui
-from PyQt5.QtCore import pyqtSignal, QObject  # For creating custom signals
 
 
 class DatacenterPage(QtWidgets.QWidget):
-    def _init_(self, parent=None):
-        super(DatacenterPage, self)._init_(parent)
+    def __init__(self, parent=None):
+        super(DatacenterPage, self).__init__(parent)
 
         ## The First Group
         dcSettingGroup = QtWidgets.QGroupBox("Datacenter Setting")
@@ -200,8 +197,8 @@ class DatacenterPage(QtWidgets.QWidget):
 
 
 class HostPage(QtWidgets.QWidget):
-    def _init_(self, parent=None):
-        super(HostPage, self)._init_(parent)
+    def __init__(self, parent=None):
+        super(HostPage, self).__init__(parent)
         ## First Group
         hostSettingGroup = QtWidgets.QGroupBox("Host Setting")
 
@@ -304,8 +301,8 @@ class HostPage(QtWidgets.QWidget):
 
 
 class VMPage(QtWidgets.QWidget):
-    def _init_(self, parent=None):
-        super(VMPage, self)._init_(parent)
+    def __init__(self, parent=None):
+        super(VMPage, self).__init__(parent)
 
         ## The First Group
         vmSettingGroup = QtWidgets.QGroupBox("Virtual Machine Setting")
@@ -391,8 +388,8 @@ class VMPage(QtWidgets.QWidget):
 
 
 class PolicyPage(QtWidgets.QWidget):
-    def _init_(self, parent=None):
-        super(PolicyPage, self)._init_(parent)
+    def __init__(self, parent=None):
+        super(PolicyPage, self).__init__(parent)
 
         ## First Group
         keySettingGroup = QtWidgets.QGroupBox("Key Policy Setting")
@@ -514,8 +511,8 @@ class PolicyPage(QtWidgets.QWidget):
 
 
 class ConfigDialog(QtWidgets.QDialog):
-    def _init_(self, parent=None):
-        super(ConfigDialog, self)._init_()
+    def __init__(self, parent=None):
+        super(ConfigDialog, self).__init__()
 
         self.parent = parent
         self.contentsWidget = QtWidgets.QListWidget()
@@ -566,6 +563,8 @@ class ConfigDialog(QtWidgets.QDialog):
         self.updateInfoGroup()
         self.setLayout(mainLayout)
 
+        #self.contentsWidget.itemClicked.connect(self.handleItemClick)
+
     def updateInfoGroup(self):
         numHost = self.pagesWidget.widget(1).numOfHostSpinBox.value()
         numVm = self.pagesWidget.widget(2).numOfVMSpinBox.value()
@@ -578,7 +577,7 @@ class ConfigDialog(QtWidgets.QDialog):
         vmSelection = self.pagesWidget.widget(3).vmSelectionComboBox.currentText()
         param = self.pagesWidget.widget(3).parameterEdit.text()
 
-        return workload + "" + vmAllocation + "" + vmSelection + "_" + param + ".ini"
+        return workload + "_" + vmAllocation + "_" + vmSelection + "_" + param + ".ini"
 
     def writeDatacenter(self, f):
         dc = self.pagesWidget.widget(0)
@@ -667,6 +666,7 @@ class ConfigDialog(QtWidgets.QDialog):
         datacenterButton.setTextAlignment(QtCore.Qt.AlignHCenter)
         datacenterButton.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
 
+
         hostButton = QtWidgets.QListWidgetItem(self.contentsWidget)
         hostButton.setIcon(QtGui.QIcon("./images/config.png"))
         hostButton.setText("Host")
@@ -687,10 +687,21 @@ class ConfigDialog(QtWidgets.QDialog):
 
         self.contentsWidget.currentItemChanged.connect(self.changePage)
 
+    def handleItemClick(self, item):
+        # Determine which button was clicked and switch to the corresponding page
+        if item.text() == "Data Center":
+            self.changePage(self.pagesWidget.widget(0), None)
+        elif item.text() == "Host":
+            self.changePage(self.pagesWidget.widget(1), None)
+        elif item.text() == "VM":
+            self.changePage(self.pagesWidget.widget(2), None)
+        elif item.text() == "Policy":
+            self.changePage(self.pagesWidget.widget(3), None)
+
 
 class CloudConf(QtWidgets.QMainWindow):
-    def _init_(self):
-        super(CloudConf, self)._init_()
+    def __init__(self):
+        super(CloudConf, self).__init__()
 
         self.initUI()
 
@@ -765,12 +776,12 @@ class CloudConf(QtWidgets.QMainWindow):
         self.showPolicyAction.setShortcut("Ctrl+P")
         self.saveAction.triggered.connect(self.configure_policy)
 
-        self.menuBar = self.menuBar()
-        self.fileMenu = self.menuBar.addMenu("&File")
+        self.mainMenuBar = self.menuBar()
+        self.fileMenu = self.mainMenuBar.addMenu("&File")
         self.fileMenu.addAction(self.saveAction)
         self.fileMenu.addAction(self.exitAction)
 
-        self.confMenu = self.menuBar.addMenu("&Configure")
+        self.confMenu = self.mainMenuBar.addMenu("&Configure")
         self.confMenu.addAction(self.showDatacenterAction)
         self.confMenu.addAction(self.showHostAction)
         self.confMenu.addAction(self.showVMAction)
@@ -795,7 +806,7 @@ class CloudConf(QtWidgets.QMainWindow):
         self.toolbar.addAction(self.exitAction)
         #        self.statusBar().showMessage('Ready')
 
-        self.resize(640, 500)
+        self.resize(1000, 600)
         self.center()
         self.setWindowIcon(QtGui.QIcon("./images/icon.png"))
         self.setWindowTitle("IAAS CloudSim Configuration")
@@ -808,7 +819,6 @@ class CloudConf(QtWidgets.QMainWindow):
 def main():
     app = QtWidgets.QApplication(sys.argv)
     ex = CloudConf()
-    ex.initUI()
     sys.exit(app.exec_())
 
 
